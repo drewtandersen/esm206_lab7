@@ -43,7 +43,46 @@ Model body mass based on only flipper length and bill depth(bad idea...there are
 model_1 <- lm(body_mass_g ~ flipper_length_mm + bill_depth_mm, data = penguins)
 summary(model_1)
 ```
+
 Use the R^2 value for multiple linear regression
   - X% of variance in penguin body mass is explained by this model with these two variables 
   
 If eerything else is held constant we expect that for every 1 mm increase in flipper length, body mass is expected to increase 51.54g on average. 
+
+Actually -- we think that a model for penguin body mass should contain variables species, flipper length, and pegnuin sex.
+```{r}
+model_2 <- lm(body_mass_g ~ species + flipper_length_mm + sex, data = penguins)
+```
+
+on average we expect a male penguins to be 530 g larger tha a female that is similiar in every other way. 
+
+## Visualize this model
+```{r}
+ggplot(data = penguins, aes(x = flipper_length_mm, y = body_mass_g)) +
+  geom_point(aes(color = species)) +
+  facet_wrap(~sex)
+```
+## A couple ways to get and report MLR model outcomes
+use broom::tidy() to get model coefficients into a tiny data frame 
+```{r}
+penguin_model2_coef <- tidy(model_2)
+penguin_model2_coef
+
+plot(model_2)
+```
+I am going to pull ou sex coefficient `r penguin_model2_coef$estimate[5]`
+
+## Look at model diagnostics 
+
+Use the plot() function
+
+## report the model outputs in a summary table 
+
+Use modelsummary:
+```{r}
+modelsummary(model_2)
+```
+```{r, results = "asis"}
+stargazer(model_2, type = "html")
+```
+
