@@ -1,0 +1,49 @@
+---
+title: "esm206_lab7"
+author: "Drew Andersen"
+date: "11/9/2021"
+output: html_document
+---
+
+```{r setup, include = TRUE, message = FALSE, warnings = FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warnings = FALSE)
+
+library(tidyverse)
+library(palmerpenguins)
+library(GGally)
+library(kableExtra)
+library(broom)
+library(modelsummary)
+library(stargazer)
+```
+
+## Explore Penguins
+Use `GGally::ggpairs()` to create a pairs plot. 
+
+```{r}
+ggpairs(penguins) 
+```
+kind of overkill --> so let's simplify variables
+lets to bill_length through body mass
+```{r}
+penguins %>% 
+  select(species,bill_length_mm:body_mass_g) %>% 
+  ggpairs(aes(color = species))
+```
+
+##Multiple Linear regression 
+We are going to try to understand (a bit better) relationships between multiple predictor variables and an outcome which is penguins body mass.
+Diff predictor variables:
+-species, flipper length, sex, bill_depth 
+
+##Model 1
+Model body mass based on only flipper length and bill depth(bad idea...there are important variables missing)
+
+```{r}
+model_1 <- lm(body_mass_g ~ flipper_length_mm + bill_depth_mm, data = penguins)
+summary(model_1)
+```
+Use the R^2 value for multiple linear regression
+  - X% of variance in penguin body mass is explained by this model with these two variables 
+  
+If eerything else is held constant we expect that for every 1 mm increase in flipper length, body mass is expected to increase 51.54g on average. 
